@@ -5,10 +5,14 @@ reload_apps = true
 kitty = true
 gtk_theme = true
 
-[config.wallpaper]
-command = "swww"
-arguments = [ "img", "-t", "fade", "--transition-duration", "0.5", "--transition-step", "255", "--transition-fps", "60", "-f", "Nearest",]
-set = true
+# [config.wallpaper]
+# command = "swww"
+# arguments = [ "img", "-t", "fade", "--transition-duration", "0.5", "--transition-step", "255", "--transition-fps", "60", "-f", "Nearest",]
+# set = true
+
+[templates.ambyst]
+input_path = "~/Repos/Axenide/Ambyst/assets/matugen/colors.json"
+output_path = "~/Repos/Axenide/Ambyst/modules/theme/colors.json"
 
 [templates.kitty]
 input_path = "~/.config/matugen/templates/kitty-colors.conf"
@@ -61,14 +65,10 @@ output_path = "~/.config/yazi/theme.toml"
 input_path = "~/.config/Ax-Shell/config/matugen/templates/hyprland-colors.conf"
 output_path = "~/.config/Ax-Shell/config/hypr/colors.conf"
 
-[templates.ax-shell]
-input_path = "~/.config/Ax-Shell/config/matugen/templates/ax-shell.css"
-output_path = "~/.config/Ax-Shell/styles/colors.css"
-post_hook = "fabric-cli exec ax-shell 'app.set_css()' &"
-
-[templates.ambyst]
-input_path = "~/Repos/Axenide/Ambyst/assets/matugen/Colors.qml"
-output_path = "~/Repos/Axenide/Ambyst/modules/theme/Colors.qml"
+# [templates.ax-shell]
+# input_path = "~/.config/Ax-Shell/config/matugen/templates/ax-shell.css"
+# output_path = "~/.config/Ax-Shell/styles/colors.css"
+# post_hook = "fabric-cli exec ax-shell 'app.set_css()' &"
 
 [config.custom_colors.red]
 color = "#FF0000"

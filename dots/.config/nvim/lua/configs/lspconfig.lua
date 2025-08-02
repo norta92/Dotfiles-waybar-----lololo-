@@ -13,7 +13,7 @@ for _, lsp in ipairs(servers) do
   }
 
   if lsp == "qmlls" then
-    opts.cmd = { "qmlls6", "-E" }
+    opts.cmd = { "qmlls6" }
   end
 
   lspconfig[lsp].setup(opts)
