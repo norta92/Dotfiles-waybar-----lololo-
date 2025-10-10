@@ -9,3 +9,10 @@ source ~/.config/fish/aliases.fish
 source ~/.config/fish/ffmpeg.fish
 source ~/.config/fish/env.fish
 zoxide init fish | source
+
+# opencode
+fish_add_path /home/adriano/.opencode/bin
+
+function conda-on
+    eval /home/adriano/.local/share/miniforge3/bin/conda "shell.fish" "hook" | source
+end

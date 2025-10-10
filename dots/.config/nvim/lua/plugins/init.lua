@@ -1,23 +1,156 @@
+-- ~/.config/nvim/init.lua o donde tengas tus autocmds
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "vimwiki",
+  desc = "Use markdown treesitter and restore backspace for vimwiki",
+  callback = function(args)
+    -- Combina los filetypes para que Treesitter y otros plugins reconozcan el markdown
+    vim.bo[args.buf].filetype = "markdown.vimwiki"
+
+    -- Restaura el mapeo de Backspace para la navegación de vimwiki
+    vim.keymap.set("n", "<Backspace>", "<Plug>VimwikiGoBackLink", {
+      buffer = args.buf,
+      noremap = true,
+      silent = true,
+      desc = "Vimwiki: Go back to previous link",
+    })
+  end,
+})
+
 return {
   {
+    "vimwiki/vimwiki",
+    keys = { "<leader>ww", "<leader>wt" },
+    lazy = false,
+    init = function()
+      vim.g.vimwiki_global_ext = 0
+      vim.g.vimwiki_list = {
+        {
+          path = "~/Dropbox/vimwiki/",
+          syntax = "markdown",
+          ext = "md",
+        },
+      }
+      vim.g.vimwiki_ext2syntax = { md = "markdown" }
+    end,
+  },
+
+  { -- show images in nvim!
+    "3rd/image.nvim",
+    enabled = true,
+    dev = false,
+    ft = { "markdown", "quarto", "vimwiki", "html" },
+    cond = function()
+      -- Disable on Windows system
+      return vim.fn.has "win32" ~= 1
+    end,
+    dependencies = {
+      "leafo/magick", -- that's a lua rock
+    },
+    config = function()
+      local image = require "image"
+      image.setup {
+        backend = "kitty",
+        integrations = {
+          markdown = {
+            enabled = true,
+            filetypes = { "markdown", "vimwiki", "quarto" },
+          },
+        },
+        editor_only_render_when_focused = false,
+        window_overlap_clear_enabled = true,
+        tmux_show_only_in_active_window = true,
+        max_width = nil,
+        max_height = nil,
+        max_width_window_percentage = nil,
+        max_height_window_percentage = 30,
+        kitty_method = "normal",
+      }
+
+      local function clear_all_images()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local images = image.get_images { buffer = bufnr }
+        for _, img in ipairs(images) do
+          img:clear()
+        end
+      end
+
+      local function get_image_at_cursor(buf)
+        local images = image.get_images { buffer = buf }
+        local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+        for _, img in ipairs(images) do
+          if img.geometry ~= nil and img.geometry.y == row then
+            local og_max_height = img.global_state.options.max_height_window_percentage
+            img.global_state.options.max_height_window_percentage = nil
+            return img, og_max_height
+          end
+        end
+        return nil
+      end
+
+      local create_preview_window = function(img, og_max_height)
+        local buf = vim.api.nvim_create_buf(false, true)
+        local win_width = vim.api.nvim_get_option_value("columns", {})
+        local win_height = vim.api.nvim_get_option_value("lines", {})
+        local win = vim.api.nvim_open_win(buf, true, {
+          relative = "editor",
+          style = "minimal",
+          width = win_width,
+          height = win_height,
+          row = 0,
+          col = 0,
+          zindex = 1000,
+        })
+        vim.keymap.set("n", "q", function()
+          vim.api.nvim_win_close(win, true)
+          img.global_state.options.max_height_window_percentage = og_max_height
+        end, { buffer = buf })
+        return { buf = buf, win = win }
+      end
+
+      local handle_zoom = function(bufnr)
+        local img, og_max_height = get_image_at_cursor(bufnr)
+        if img == nil then
+          return
+        end
+
+        local preview = create_preview_window(img, og_max_height)
+        image.hijack_buffer(img.path, preview.win, preview.buf)
+      end
+
+      vim.keymap.set("n", "<leader>io", function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        handle_zoom(bufnr)
+      end, { buffer = true, desc = "image [o]pen" })
+
+      vim.keymap.set("n", "<leader>ic", clear_all_images, { desc = "image [c]lear" })
+    end,
+  },
+
+  {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
+    event = "BufWritePre",
     lazy = false,
     opts = require "configs.conform",
   },
 
   {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "quarto", "vimwiki" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+  },
+  {
     "CopilotC-Nvim/CopilotChat.nvim",
     lazy = false,
     dependencies = {
-      { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
-      { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+      { "github/copilot.vim" },
+      { "nvim-lua/plenary.nvim", branch = "master" },
     },
-    build = "make tiktoken", -- Only on MacOS or Linux
-    opts = {
-      -- See Configuration section for options
-    },
-    -- See Commands section for default commands if you want to lazy load on them
+    build = "make tiktoken",
+    opts = {},
   },
 
   {
