@@ -1,40 +1,23 @@
--- ~/.config/nvim/init.lua o donde tengas tus autocmds
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "vimwiki",
-  desc = "Use markdown treesitter and restore backspace for vimwiki",
-  callback = function(args)
-    -- Combina los filetypes para que Treesitter y otros plugins reconozcan el markdown
-    vim.bo[args.buf].filetype = "markdown.vimwiki"
-
-    -- Restaura el mapeo de Backspace para la navegación de vimwiki
-    vim.keymap.set("n", "<Backspace>", "<Plug>VimwikiGoBackLink", {
-      buffer = args.buf,
-      noremap = true,
-      silent = true,
-      desc = "Vimwiki: Go back to previous link",
-    })
-  end,
-})
-
 return {
   {
-    "vimwiki/vimwiki",
-    keys = { "<leader>ww", "<leader>wt" },
-    lazy = false,
-    init = function()
-      vim.g.vimwiki_global_ext = 0
-      vim.g.vimwiki_list = {
-        {
-          path = "~/Dropbox/vimwiki/",
-          syntax = "markdown",
-          ext = "md",
-        },
-      }
-      vim.g.vimwiki_ext2syntax = { md = "markdown" }
-    end,
+    "serenevoid/kiwi.nvim",
+    opts = {
+      {
+        name = "ax-wiki",
+        path = "Dropbox/ax-wiki",
+      },
+    },
+    keys = {
+      { "<leader>ww", ':lua require("kiwi").open_wiki_index()<cr>', desc = "Open Wiki index" },
+      {
+        "<leader>aw",
+        ':lua require("kiwi").open_wiki_index("ax-wiki")<cr>',
+        desc = "Open index of [Ax]Wiki",
+      },
+      { "T", ':lua require("kiwi").todo.toggle()<cr>', desc = "Toggle Markdown Task" },
+    },
+    lazy = true,
   },
-
   { -- show images in nvim!
     "3rd/image.nvim",
     enabled = true,

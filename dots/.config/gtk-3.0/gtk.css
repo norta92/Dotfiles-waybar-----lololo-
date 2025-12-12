@@ -1,4 +1,8 @@
-@import './colors.css';
+@import "./colors.css";
+
+* {
+  font-weight: 500;
+}
 
 @define-color accent_color @primary;
 @define-color accent_bg_color @primary;

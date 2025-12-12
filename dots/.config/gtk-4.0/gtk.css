@@ -1,5 +1,9 @@
 @import './colors.css';
 
+* {
+  font-weight: 500;
+}
+
 @keyframes ripple {
   to {
     background-size: 1000% 1000%;

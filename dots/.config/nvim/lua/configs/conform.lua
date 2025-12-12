@@ -6,11 +6,16 @@ local options = {
     scss = { "prettier" },
     sass = { "prettier" },
     html = { "prettier" },
+    json = { "prettier" },
+    nix = { "alejandra" },
+    bash = { "shfmt" },
+    zsh = { "shfmt" },
+    sh = { "shfmt" },
   },
 
   format_on_save = {
     -- These options will be passed to conform.format()
-    timeout_ms = 500,
+    timeout_ms = 5000,
     lsp_fallback = true,
   },
 }

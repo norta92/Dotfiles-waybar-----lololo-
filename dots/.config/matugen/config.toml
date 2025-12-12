@@ -6,14 +6,14 @@ kitty = true
 gtk_theme = true
 
 # [config.wallpaper]
-# command = "swww"
+# command = "awww"
 # arguments = [ "img", "-t", "fade", "--transition-duration", "0.5", "--transition-step", "255", "--transition-fps", "60", "-f", "Nearest",]
 # set = true
 
 [templates.kitty]
 input_path = "~/.config/matugen/templates/kitty-colors.conf"
 output_path = "~/.config/kitty/colors.conf"
-post_hook = "killall -SIGUSR1 kitty &"
+post_hook = "pkill -SIGUSR1 kitty &"
 
 [templates.btop]
 input_path = "~/.config/matugen/templates/btop.theme"
@@ -80,7 +80,7 @@ output_path = "~/.config/yazi/theme.toml"
 # [templates.hyprland]
 # input_path = "~/.config/Ax-Shell/config/matugen/templates/hyprland-colors.conf"
 # output_path = "~/.config/Ax-Shell/config/hypr/colors.conf"
-
+#
 # [templates.ax-shell]
 # input_path = "~/.config/Ax-Shell/config/matugen/templates/ax-shell.css"
 # output_path = "~/.config/Ax-Shell/styles/colors.css"
